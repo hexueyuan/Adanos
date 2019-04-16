@@ -1,167 +1,106 @@
 <template>
-  <el-row style="height:100%;">
-    <el-col :span="8" style="height:45vh;">
-      <el-card style="height:100%">
-        <Boardchart :chart-data="boardData" ></Boardchart>
-      </el-card>
-    </el-col>
-    <el-col :span="8" style="height:45vh;">
-      <el-card style="height:100%">
-        <span style="width:100%; font-size:3vw">物理个数</span><br/>
-        <span style="width:100%; color:green; font-size:5vw">{{ count.physics }}</span><br/>
-        <span style="width:100%; font-size:3vw">逻辑个数</span><br/>
-        <span style="width:100%; color:green; font-size:5vw">{{ count.logic }}</span><br/>
-      </el-card>
-    </el-col>
-    <el-col :span="8" style="height:45vh;">
-      <el-card style="height:100%">
-        <span style="width:100%; font-size:2.5vw">用户态：</span><span style="width:100%; font-size:2.5vw; color: green">{{ useTime.user }}</span><br/>
-        <span style="width:100%; font-size:2.5vw">系统态：</span><span style="width:100%; font-size:2.5vw; color: green">{{ useTime.system }}</span><br/>
-        <span style="width:100%; font-size:2.5vw">IO等待：</span><span style="width:100%; font-size:2.5vw; color: orange">{{ useTime.io }}</span><br/>
-        <span style="width:100%; font-size:2.5vw">硬中断：</span><span style="width:100%; font-size:2.5vw; color: orange">{{ useTime.irq }}</span><br/>
-        <span style="width:100%; font-size:2.5vw">软中断：</span><span style="width:100%; font-size:2.5vw; color: orange">{{ useTime.sirq }}</span><br/>
-      </el-card>
-    </el-col>
-    <el-col :span="24" style="height:47vh">
-      <el-card style="height:100%">
-        <Linechart :chart-data="chartData"></Linechart>
-      </el-card>
-    </el-col>
-  </el-row>
+    <div style="height: 100%;width: 100%;">
+      <div style="height: 30%;width: 100%;">
+          <linechart title="CPU负载情况" :data="load_data"/>
+      </div>
+      <div style="height: 10%;width;100%;">
+        <div style="height: 100%;width: 22%;margin-left:5%;margin-right:1%;float:left;">
+          <card title="当前负载" value="0.86"/>
+        </div>
+        <div style="height: 100%;width: 22%;margin-right:1%;float:left;">
+          <card title="平均负载" value="0.52" type="common" />
+        </div>
+        <div style="height: 100%;width: 22%;margin-right:1%;float:left;">
+          <card title="最大负载" value="0.96" type="good" />
+        </div>
+        <div style="height: 100%;width: 22%;margin-right:1%;float:left;">
+          <card title="最小负载" value="0.06" type="bad" />
+        </div>
+      </div>
+      <div style="height: 80%;width:90%;margin:10px auto;">
+        <el-table :data=this.proccess_data style="width:100%">
+          <el-table-column prop="cpu" label="CPU%" width="180"/>
+          <el-table-column prop="mem" label="内存%" width="180"/>
+          <el-table-column prop="pid" label="PID" width="180"/>
+          <el-table-column prop="user" label="用户" width="180"/>
+          <el-table-column prop="time" label="运行时间" width="180"/>
+          <el-table-column prop="name" label="进程名"/>
+        </el-table>
+      </div>
+    </div>
 </template>
 
 <script>
-import Boardchart from '@/components/charts/Boardchart'
-import Linechart from '@/components/charts/Linechart'
+import linechart from '@/components/item/linechart'
+import card from '@/components/item/card'
+import pie from '@/components/item/pie'
+import dashboard from '@/components/item/dashboard'
+import mutillinechart from '@/components/item/mutillinechart'
 
 export default {
-  components: {
-    Boardchart,
-    Linechart
-  },
-  data () {
-    return {
-      responseData: {
-        data: {}
-      },
-      boardData: {},
-      chartData: {},
-      count: {
-        physics: 0,
-        logic: 0
-      },
-      useTime: {
-        user: 0,
-        system: 0,
-        io: 0,
-        irq: 0,
-        sirq: 0
-      }
-    }
-  },
-  created () {
-    this.get_disk_data()
-  },
-  methods: {
-    get_disk_data: function () {
-      var that = this
-      this.$http.get('http://localhost:5001/smwsAPI/cpu_use_rate').then(function (response) {
-        that.responseData = response.body
-        that.flush_board_data()
-        that.flush_chart_data()
-        that.flush_card_data()
-      })
+    components: {
+      linechart,
+      card
     },
-    to_format_time: function (t) {
-      var h = ''
-      var m = ''
-      var s = ''
-      if (t > 3600) {
-        h = Math.floor(t / 3600)
-        t -= h * 3600
-        h += 'h'
+    mounted() {
+      this.request_data()
+      if (this.timer) {
+          clearInterval(this.timer)
+      } else {
+          this.timer = setInterval(() => {
+              this.update_data()
+          }, 10000)
       }
-      if (t > 60) {
-        m = Math.floor(t / 60)
-        t -= m * 60
-        m += 'm'
-      }
-      s = t + 's'
-      return h + m + s
     },
-    flush_board_data: function () {
-      var option = {
-        tooltip: {
-          formatter: '{a}:{c}%'
+    data() {
+      return {
+        responseData: {},
+        time_radio: '24小时',
+        load_data: {
+          xAxis: [],
+          yAxis: []
         },
-        series: [
-          {
-            name: '使用率',
-            type: 'gauge',
-            detail: {formatter: '{value}%'},
-            data: [{value: 0, name: ''}],
-            radius: '100%'
+        proccess_data: []
+      }
+    },
+    watch: {
+    },
+    methods: {
+      request_data: function () {
+        var that = this
+        this.$http.post('http://localhost:5001/smwsAPI/cpu_info', {}).then(function (response) {
+          if (response.body.status == "success") {
+            that.responseData = response.body.data
           }
-        ]
+        })
+      },
+      //更新负载折线图数据
+      update_load_data: function() {
+        var data = this.responseData.load
+        var tmp_data = {
+          xAxis: [],
+          yAxis: []
+        }
+        data.forEach(element => {
+          tmp_data.xAxis.push((new Date(element.time * 1000)).toLocaleString())
+          tmp_data.yAxis.push(element.value)
+        })
+        this.load_data = tmp_data
+      },
+      update_proccess_data: function() {
+        this.proccess_data = this.responseData.top20
+      },
+      update_data: function () {
+        this.request_data()
+        this.update_load_data()
+        this.update_proccess_data()
       }
-      var useRateData = this.responseData.data.use_rate.sort(function (a, b) {
-        return b.timestamp - a.timestamp
-      })
-      option.series[0].data[0].value = useRateData[0].use_rate
-      this.boardData = option
     },
-    flush_chart_data: function () {
-      var option = {
-        tooltip: {
-          trigger: 'axis'
-        },
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: []
-        },
-        yAxis: {
-          type: 'value',
-          max: 100
-        },
-        series: [{
-          data: [],
-          type: 'line',
-          areaStyle: {}
-        }]
-      }
-      var useRateData = this.responseData.data.use_rate
-      useRateData.sort(function (a, b) {
-        return a.timestamp - b.timestamp
-      }).forEach(element => {
-        option.xAxis.data.push((new Date(element.timestamp * 1000).format('MM-dd h:m:s')))
-        option.series[0].data.push(element.use_rate)
-      })
-      this.chartData = option
-    },
-    flush_card_data: function () {
-      var useRateData = this.responseData.data.use_rate.sort(function (a, b) {
-        return b.timestamp - a.timestamp
-      })
-      this.useTime = {
-        user: this.to_format_time(useRateData[0].time.user),
-        system: this.to_format_time(useRateData[0].time.system),
-        io: this.to_format_time(useRateData[0].time.io),
-        irq: this.to_format_time(useRateData[0].time.irq),
-        sirq: this.to_format_time(useRateData[0].time.sirq)
-      }
-      this.count = useRateData[0].count
+    distroyed() {
+        clearInterval(this.timer)
     }
-  },
-  watch: {
-    selectMountPoint: function (val) {
-      this.flush_board_data()
-      this.flush_chart_data()
-      this.flush_card_data()
-    }
-  }
 }
 </script>
 
-<style lang="scss">
+<style>
 </style>

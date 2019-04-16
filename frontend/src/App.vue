@@ -1,14 +1,14 @@
 <template>
-    <el-container class="app-all" direction="vertical">
-      <el-header class="app-header">
-        <Header></Header>
+    <el-container id="myapp" direction="vertical">
+      <el-header id="app-header">
+        <Header/>
       </el-header>
-      <el-container class="app-context" direction="horizontal">
-        <el-aside class="app-aside">
-          <Aside></Aside>
+      <el-container id="app-context" direction="horizontal">
+        <el-aside id="app-aside">
+          <Aside/>
         </el-aside>
-        <el-main class="app-main">
-          <router-view></router-view>
+        <el-main id="app-page">
+          <Page/>
         </el-main>
       </el-container>
     </el-container>
@@ -17,35 +17,40 @@
 <script>
 import Header from './components/base/Header'
 import Aside from './components/base/Aside'
+import Page from './components/base/Page'
 
 export default {
   name: 'App',
   components: {
     Header,
-    Aside
+    Aside,
+    Page
   }
 }
 </script>
 
 <style lang="scss">
-  .app-all {
+html, body {
+  font-size: 16px;
+}
+  #myapp {
     height: 100%;
     width: 100%;
-    .app-header {
-      background-color: #545454;
-      height: 5% !important;
+    #app-header {
+      background-color: #6db8b4;
+      height: 7% !important;
     }
-    .app-context {
-      height: 95% !important;
-      .app-aside {
-        background-color:#464646;
+    #app-context {
+      height: 93% !important;
+      #app-aside {
+        background-color:#f4f4f4;
         height: 100%;
-        width: 15% !important;
+        width: 10% !important;
       }
-      .app-main {
+      #app-page {
         background-color: rgb(255, 255, 255);
         height: 100%;
-        width: 85% !important;
+        width: 90% !important;
         margin: 0px;
         padding: 0px;
       }

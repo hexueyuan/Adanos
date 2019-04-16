@@ -8,6 +8,11 @@ import Memorypage from '@/components/pages/Memorypage'
 import FileSystempage from '@/components/pages/FileSystemGUI'
 import TESTpage from '@/components/pages/TESTpage'
 import Watcherpage from '@/components/pages/WatcherPage'
+import dashboardTest from '@/components/pages/test/dashboardTest'
+import linechartTest from '@/components/pages/test/linechartTest'
+import pieTest from '@/components/pages/test/pieTest'
+import cardTest from '@/components/pages/test/cardTest'
+import mutillinechartTest from '@/components/pages/test/mutillinechartTest'
 
 Vue.use(Router)
 
@@ -47,6 +52,31 @@ export default new Router({
       path: '/watcherPage',
       name: 'watcherPage',
       component: Watcherpage
+    },
+    {
+      path: '/dashboardTest',
+      name: 'dashboardTest',
+      component: dashboardTest
+    },
+    {
+      path: '/linechartTest',
+      name: 'linechartTest',
+      component: linechartTest
+    },
+    {
+      path: '/pieTest',
+      name: 'pieTest',
+      component: pieTest
+    },
+    {
+      path: '/cardTest',
+      name: 'cardTest',
+      component: cardTest
+    },
+    {
+      path: '/mutillinechartTest',
+      name: 'mutillinechartTest',
+      component: mutillinechartTest
     }
   ]
 })

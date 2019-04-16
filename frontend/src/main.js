@@ -7,10 +7,14 @@ import VueResource from 'vue-resource'
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+import '../static/icon/iconfont.css'
 
 Vue.use(ElementUI)
 Vue.use(VueResource)
 Vue.config.productionTip = false
+
+Vue.http.options.emulateHTTP = true;
+Vue.http.options.emulateJSON = true;
 
 Date.prototype.format = function (format) {
   var date = {
