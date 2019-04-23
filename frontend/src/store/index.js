@@ -66,6 +66,37 @@ const state = {
             {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'active': 0, 'inactive': 0, 'time': 0}
         ]
     },
+    memory: {
+        //图表数据窗口大小默认20
+        win_size: 20,
+        //win_size * 1.2
+        win_max_size: 24,
+        //进程数据窗口大小默认10
+        proccess_top_cnt: 10,
+        //为适应动态调整，数据实际保存数量为win_size的1.2倍
+        data: [
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0},
+            {'use_rate': 0, 'total': 0, 'used': 0, 'free': 0, 'time': 0}
+        ]
+    },
     proccess: {
         //保存全部进程数据
         data: []
@@ -78,6 +109,9 @@ const getters = {
     },
     diskData(state) {
         return state.disk.data.slice(state.disk.win_size * (-1))
+    },
+    memoryData(state) {
+        return state.memory.data.slice(state.memory.win_size * (-1))
     },
     proccessCPUData(state) {
         var copyData = state.proccess.data.slice(0)
@@ -100,6 +134,14 @@ const mutations = {
             state.disk.data.push(element)
             if (state.disk.data.length > state.disk.win_max_size) {
                 state.disk.data.shift()
+            }
+        });
+    },
+    updateMemoryData(state, datas) {
+        datas.forEach(element => {
+            state.memory.data.push(element)
+            if (state.memory.data.length > state.memory.win_max_size) {
+                state.memory.data.shift()
             }
         });
     },

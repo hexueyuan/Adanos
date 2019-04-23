@@ -42,6 +42,7 @@ export default {
   mounted() {
     this.$socket.emit('cpuDataRequest')
     this.$socket.emit('diskDataRequest')
+    this.$socket.emit('memoryDataRequest')
   },
   sockets: {
     onDiskData(data) {
@@ -49,6 +50,9 @@ export default {
     },
     onCPUData(data) {
       this.$store.commit('updateCPUData', [data])
+    },
+    onMemoryData(data) {
+      this.$store.commit('updateMemoryData', [data])
     }
   }
 }
