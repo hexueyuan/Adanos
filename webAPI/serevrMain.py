@@ -1,7 +1,11 @@
-from flask import Flask
-from flask import make_response
-from flask import request
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python2
+
+from flask import Flask, request, make_response
+from flask_socketio import SocketIO
+from threading import Thread, Lock
 from collections import defaultdict
+
 import sqlite3
 import json
 import sys
@@ -9,12 +13,18 @@ import random
 import time
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 conf = {}
 cpu_load_init = []
+thread_lock_state = {
+    'cpuEventLock': Lock(),
+    'diskEventLock': Lock()
+}
+thread = None
 
 def data_init():
     now = int(time.time())
-    for t in range(now - 20, now):
+    for t in range(now - 100, now):
         cpu_load_init.append({
             "time": t,
             "value": round(random.random(), 2)
@@ -40,7 +50,7 @@ def data_init():
 def readCpuTableMock(start_timestamp, end_timestamp):
     if start_timestamp == 0 or end_timestamp == 0:
         end_timestamp = int(time.time())
-        start_timestamp = end_timestamp - 20
+        start_timestamp = end_timestamp - 100
     data = {
         "load": [],
         "top20": []
@@ -94,10 +104,60 @@ def readMemoryTableMock(start_timestamp, end_timestamp):
         data['swap']['selectTimeslotUseRate'].append({'time': t, 'value': round(random.random(), 2)})
     return data
 
-@app.route('/smwsAPI/cpu_info', methods = ['POST'])
+def sendCPUData():
+    while True:
+        t = int(time.time())
+        load = round(random.random(), 2) * 100
+        user = round(random.random(), 2) * 100
+        system = round(random.random(), 2) * 100
+        idle = round(random.random(), 2) * 100
+        nice = round(random.random(), 2) * 100
+        socketio.emit('onCPUData', {
+            'time'  : t,
+            'load'  : load,
+            'user'  : user,
+            'system': system,
+            'idle'  : idle,
+            'nice'  : nice
+        }, namespace='/')
+        socketio.sleep(3)
+
+def sendDiskData():
+    while True:
+        t = int(time.time())
+        use_rate = round(random.random(), 2)
+        total = 50
+        used = total * use_rate
+        free = total * (1 - use_rate)
+        active = round(random.random(), 2) * total
+        inactive = round(random.random(), 2) * total
+        socketio.emit('onDiskData', {
+            'time'      : t,
+            'use_rate'  : use_rate * 100,
+            'total'     : total,
+            'used'      : used,
+            'free'      : free,
+            'active'    : active,
+            'inactive'  : inactive
+        }, namespace='/')
+        socketio.sleep(3)
+
+@socketio.on('cpuDataRequest', namespace='/')
+def cpuEvent_connect():
+    global thread
+    with thread_lock_state['cpuEventLock']:
+        socketio.start_background_task(target=sendCPUData)
+
+@socketio.on('diskDataRequest', namespace='/')
+def diskEvent_connect():
+    global thread
+    with thread_lock_state['diskEventLock']:
+        socketio.start_background_task(target=sendDiskData)
+
+@app.route('/smwsAPI/cpu_info', methods = ['GET'])
 def cpuInfo():
-    start_time = request.form.get('start_time_second', 0)
-    end_time = request.form.get('end_time_second', 0)
+    start_time = request.args.get('start', 0)
+    end_time = request.args.get('end', 0)
     responseData = {
         "status": "success",
         "errMsg": None,
@@ -128,4 +188,4 @@ if __name__ == '__main__':
         context = f.read()
         conf = json.loads(context)
     data_init()
-    app.run(debug=True, port=5001)
+    socketio.run(app, debug=True, port=5001)

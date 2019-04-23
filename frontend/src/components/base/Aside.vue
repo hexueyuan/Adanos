@@ -39,6 +39,18 @@
 
 <script>
 export default {
+  mounted() {
+    this.$socket.emit('cpuDataRequest')
+    this.$socket.emit('diskDataRequest')
+  },
+  sockets: {
+    onDiskData(data) {
+      this.$store.commit('updateDiskData', [data])
+    },
+    onCPUData(data) {
+      this.$store.commit('updateCPUData', [data])
+    }
+  }
 }
 </script>
 
