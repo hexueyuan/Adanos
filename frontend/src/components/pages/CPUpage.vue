@@ -1,9 +1,9 @@
 <template>
     <div style="height: 100%;width: 100%;">
-      <div style="height: 500px;width: 100%;">
+      <div style="height: 400px;width: 100%;">
           <div id="cpu-load-line-chart" style="height:100%;width:100%;"></div>
       </div>
-      <div style="height: 250px;width;100%;margin-top:30px;">
+      <div style="height: 200px;width;100%;margin-top:30px;">
         <div style="height: 100%;width: 23%;margin-left:2%;margin-right:2%;float:left;">
           <card title="LOAD_CURRENT%" :value="String(cardData.cur)"/>
         </div>
@@ -17,7 +17,7 @@
           <card title="LOAD_MIN%" :value="String(cardData.min)"/>
         </div>
       </div>
-      <div style="height: 250px;width;100%;margin-top:30px;">
+      <div style="height: 200px;width;100%;margin-top:30px;">
         <div style="height: 100%;width: 23%;margin-left:2%;margin-right:2%;float:left;">
           <card title="STATUS_USER%" :value="String(cardData.user)"/>
         </div>

@@ -13,7 +13,7 @@ export default {
 <style>
 #page {
     width: 98%;
-    height: 98%;
+    height: 92%;
     margin-left:1%;
     margin-right:1%;
     margin-top: 1%;

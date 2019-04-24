@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div style="height: 500px;width: 100%;">
+    <div style="height: 400px;width: 100%;">
       <div id="disk-used-line-chart" style="height:100%;width:100%;"></div>
     </div>
-    <div style="height: 210px;width;100%;margin-top:30px;">
+    <div style="height: 200px;width;100%;margin-top:30px;">
       <div style="height: 100%;width: 23%;margin-left:2%;margin-right:2%;float:left;">
         <card title="USEDRATE_CURRENT%" :value="String(cardData.cur)"/>
       </div>
@@ -17,7 +17,7 @@
         <card title="USEDRATE_MIN%" :value="String(cardData.min)"/>
       </div>
     </div>
-    <div style="height: 210px;width;100%;margin-top:30px;">
+    <div style="height: 200px;width;100%;margin-top:30px;">
       <div style="height: 100%;width: 23%;margin-left:2%;margin-right:2%;float:left;">
         <card title="DISK_TOTAL(GB)" :value="String(cardData.total)"/>
       </div>
@@ -28,7 +28,7 @@
         <card title="DISK_FREE(GB)" :value="String(cardData.free)"/>
       </div>
     </div>
-    <div style="height: 210px;width;100%;margin-top:30px;">
+    <div style="height: 200px;width;100%;margin-top:30px;">
       <div style="height: 100%;width: 23%;margin-left:2%;margin-right:2%;float:left;">
         <card title="DISK_ACTIVE(GB)" :value="String(cardData.active)"/>
       </div>
