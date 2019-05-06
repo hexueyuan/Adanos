@@ -31,6 +31,8 @@ const linechart_option = {
     ]
 }
 
+
+
 const conf = {
     linechart_option
 }

@@ -40,20 +40,20 @@
 <script>
 export default {
   mounted() {
-    this.$socket.emit('cpuDataRequest')
-    this.$socket.emit('diskDataRequest')
-    this.$socket.emit('memoryDataRequest')
+    //this.$socket.emit('cpuDataRequest')
+    //this.$socket.emit('diskDataRequest')
+    //this.$socket.emit('memoryDataRequest')
   },
   sockets: {
-    onDiskData(data) {
-      this.$store.commit('updateDiskData', [data])
-    },
-    onCPUData(data) {
-      this.$store.commit('updateCPUData', [data])
-    },
-    onMemoryData(data) {
-      this.$store.commit('updateMemoryData', [data])
-    }
+    //onDiskData(data) {
+    //  this.$store.commit('updateDiskData', [data])
+    //},
+    //onCPUData(data) {
+    //  this.$store.commit('updateCPUData', [data])
+    //},
+    //onMemoryData(data) {
+    //  this.$store.commit('updateMemoryData', [data])
+    //}
   }
 }
 </script>
