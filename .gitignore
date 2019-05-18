@@ -1,2 +1,7 @@
 .vscode/*
 *.pyc
+*/node_modules/*
+log/*
+nohup.out
+test/*
+database/*

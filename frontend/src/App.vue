@@ -1,17 +1,5 @@
 <template>
-    <el-container id="myapp" direction="vertical">
-      <el-header id="app-header">
-        <Header/>
-      </el-header>
-      <el-container id="app-context" direction="horizontal">
-        <el-aside id="app-aside">
-          <Aside/>
-        </el-aside>
-        <el-main id="app-page">
-          <Page/>
-        </el-main>
-      </el-container>
-    </el-container>
+    <router-view></router-view>
 </template>
 
 <script>

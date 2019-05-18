@@ -10,12 +10,12 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "@xunlei/vue-context-menu": "^1.0.2",
     "axios": "^0.18.0",
     "echarts": "^4.1.0",
     "element-ui": "^2.6.1",
     "socket.io-client": "^2.2.0",
     "vue": "^2.5.2",
+    "vue-context-menu": "^2.0.6",
     "vue-resource": "^1.5.1",
     "vue-router": "^3.0.1",
     "vue-socket.io": "^3.0.7",

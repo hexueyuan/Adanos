@@ -15,9 +15,9 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '../static/icon/iconfont.css'
 
-//Vue.use(new VueSocketIO({
-//  connection: 'ws://localhost:5001',
-//  }), store)
+Vue.use(new VueSocketIO({
+  connection: 'ws://localhost:8081',
+  }), store)
 
 Vue.use(ElementUI)
 Vue.use(VueResource)

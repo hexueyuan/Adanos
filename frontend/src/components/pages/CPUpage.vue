@@ -27,9 +27,6 @@
         <div style="height: 100%;width: 22%;margin-right:2%;float:left;">
           <card title="STATUS_IDLE%" :value="String(cardData.idle)"/>
         </div>
-        <div style="height: 100%;width: 22%;margin-right:2%;float:left;">
-          <card title="STATUS_NICE%" :value="String(cardData.nice)"/>
-        </div>
       </div>
     </div>
 </template>
@@ -56,15 +53,15 @@ export default {
       var sum, max, min
       this.$store.getters.cpuData.forEach(record => {
         if (sum === undefined) {
-          sum = record.load
+          sum = record.used_rate
         } else {
-          sum += record.load
+          sum += record.used_rate
         }
-        if (max === undefined || max < record.load) {
-          max = record.load
+        if (max === undefined || max < record.used_rate) {
+          max = record.used_rate
         }
-        if (min === undefined || min > record.load) {
-          min = record.load
+        if (min === undefined || min > record.used_rate) {
+          min = record.used_rate
         }
       })
       var avg = (sum / this.$store.getters.cpuData.length).toFixed(2)
@@ -72,11 +69,10 @@ export default {
         avg: avg,
         max: max.toFixed(2),
         min: min.toFixed(2),
-        cur: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].load.toFixed(2),
-        user: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].user.toFixed(2),
-        system: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].system.toFixed(2),
-        idle: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].idle.toFixed(2),
-        nice: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].nice.toFixed(2)
+        cur: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].used_rate.toFixed(2),
+        user: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].user_time_percent.toFixed(2),
+        system: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].system_time_percent.toFixed(2),
+        idle: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].idle_time_percent.toFixed(2)
       }
     }
   },
@@ -129,10 +125,10 @@ export default {
           if (record.time == 0) {
             option.xAxis.data.push('')
           } else {
-            option.xAxis.data.push((new Date(record.time * 1000)).toTimeString())
+            option.xAxis.data.push((new Date(record.timestamp * 1000)).toTimeString())
           }
           
-          option.series[0].data.push(record.load)
+          option.series[0].data.push(record.used_rate)
         });
         this.loadLinechart.setOption(option)
         this.loadLinechart.hideLoading()
