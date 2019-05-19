@@ -1,7 +1,7 @@
 <template>
     <el-row style="height:100%; border-bottom-width:1px;">
         <el-col :span="24">
-            <span class="header-title">SMWS</span>
+            <span class="header-title">Adanos</span>
         </el-col>
     </el-row>
 </template>

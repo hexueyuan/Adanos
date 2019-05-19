@@ -1,104 +1,140 @@
 <template>
     <div style="height: 100%;width: 100%;">
-      <div style="height: 30%;width: 100%;">
-          <linechart title="CPU负载情况" :data="load_data"/>
+      <div style="height: 400px;width: 100%;">
+          <div id="cpu-load-line-chart" style="height:100%;width:100%;"></div>
       </div>
-      <div style="height: 10%;width;100%;">
-        <div style="height: 100%;width: 22%;margin-left:5%;margin-right:1%;float:left;">
-          <card title="当前负载" value="0.86"/>
+      <div style="height: 200px;width;100%;margin-top:30px;">
+        <div style="height: 100%;width: 23%;margin-left:2%;margin-right:2%;float:left;">
+          <card title="LOAD_CURRENT%" :value="String(cardData.cur)"/>
         </div>
-        <div style="height: 100%;width: 22%;margin-right:1%;float:left;">
-          <card title="平均负载" value="0.52" type="common" />
+        <div style="height: 100%;width: 23%;margin-right:2%;float:left;">
+          <card title="LOAD_AVG%" :value="String(cardData.avg)"/>
         </div>
-        <div style="height: 100%;width: 22%;margin-right:1%;float:left;">
-          <card title="最大负载" value="0.96" type="good" />
+        <div style="height: 100%;width: 22%;margin-right:2%;float:left;">
+          <card title="LOAD_MAX%" :value="String(cardData.max)"/>
         </div>
-        <div style="height: 100%;width: 22%;margin-right:1%;float:left;">
-          <card title="最小负载" value="0.06" type="bad" />
+        <div style="height: 100%;width: 22%;margin-right:2%;float:left;">
+          <card title="LOAD_MIN%" :value="String(cardData.min)"/>
         </div>
       </div>
-      <div style="height: 80%;width:90%;margin:10px auto;">
-        <el-table :data=this.proccess_data style="width:100%">
-          <el-table-column prop="cpu" label="CPU%" width="180"/>
-          <el-table-column prop="mem" label="内存%" width="180"/>
-          <el-table-column prop="pid" label="PID" width="180"/>
-          <el-table-column prop="user" label="用户" width="180"/>
-          <el-table-column prop="time" label="运行时间" width="180"/>
-          <el-table-column prop="name" label="进程名"/>
-        </el-table>
+      <div style="height: 200px;width;100%;margin-top:30px;">
+        <div style="height: 100%;width: 23%;margin-left:2%;margin-right:2%;float:left;">
+          <card title="STATUS_USER%" :value="String(cardData.user)"/>
+        </div>
+        <div style="height: 100%;width: 23%;margin-right:2%;float:left;">
+          <card title="STATUS_SYSTEM%" :value="String(cardData.system)"/>
+        </div>
+        <div style="height: 100%;width: 22%;margin-right:2%;float:left;">
+          <card title="STATUS_IDLE%" :value="String(cardData.idle)"/>
+        </div>
       </div>
     </div>
 </template>
 
 <script>
-import linechart from '@/components/item/linechart'
+import echarts from 'echarts'
 import card from '@/components/item/card'
-import pie from '@/components/item/pie'
-import dashboard from '@/components/item/dashboard'
-import mutillinechart from '@/components/item/mutillinechart'
 
 export default {
-    components: {
-      linechart,
-      card
+  components: {
+    card
+  },
+  mounted() {
+    this.init()
+  },
+  data() {
+    return {}
+  },
+  computed: {
+    cpuData() {
+      return this.$store.getters.cpuData
     },
-    mounted() {
-      this.request_data()
-      if (this.timer) {
-          clearInterval(this.timer)
-      } else {
-          this.timer = setInterval(() => {
-              this.update_data()
-          }, 10000)
-      }
-    },
-    data() {
-      return {
-        responseData: {},
-        time_radio: '24小时',
-        load_data: {
-          xAxis: [],
-          yAxis: []
-        },
-        proccess_data: []
-      }
-    },
-    watch: {
-    },
-    methods: {
-      request_data: function () {
-        var that = this
-        this.$http.post('http://localhost:5001/smwsAPI/cpu_info', {}).then(function (response) {
-          if (response.body.status == "success") {
-            that.responseData = response.body.data
-          }
-        })
-      },
-      //更新负载折线图数据
-      update_load_data: function() {
-        var data = this.responseData.load
-        var tmp_data = {
-          xAxis: [],
-          yAxis: []
+    cardData() {
+      var sum, max, min
+      this.$store.getters.cpuData.forEach(record => {
+        if (sum === undefined) {
+          sum = record.used_rate
+        } else {
+          sum += record.used_rate
         }
-        data.forEach(element => {
-          tmp_data.xAxis.push((new Date(element.time * 1000)).toLocaleString())
-          tmp_data.yAxis.push(element.value)
-        })
-        this.load_data = tmp_data
-      },
-      update_proccess_data: function() {
-        this.proccess_data = this.responseData.top20
-      },
-      update_data: function () {
-        this.request_data()
-        this.update_load_data()
-        this.update_proccess_data()
+        if (max === undefined || max < record.used_rate) {
+          max = record.used_rate
+        }
+        if (min === undefined || min > record.used_rate) {
+          min = record.used_rate
+        }
+      })
+      var avg = (sum / this.$store.getters.cpuData.length).toFixed(2)
+      return {
+        avg: avg,
+        max: max.toFixed(2),
+        min: min.toFixed(2),
+        cur: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].used_rate.toFixed(2),
+        user: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].user_time_percent.toFixed(2),
+        system: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].system_time_percent.toFixed(2),
+        idle: this.$store.getters.cpuData[this.$store.getters.cpuData.length - 1].idle_time_percent.toFixed(2)
       }
-    },
-    distroyed() {
-        clearInterval(this.timer)
     }
+  },
+  watch: {
+    cpuData() {
+      this.updateView()
+    }
+  },
+  methods: {
+    init() {
+      this.updateView()
+    },
+    updateView() {
+      if (this.loadLinechart == undefined) {
+        this.loadLinechart = echarts.init(document.getElementById('cpu-load-line-chart'))
+        var option = JSON.parse(JSON.stringify(this.$conf.linechart_option))
+        option.title = {
+          text: 'CPU负载实时数据',
+          right: 'center',
+          textStyle: {
+            fontSize: 30
+          }
+        }
+        option.grid = {
+          x: '2%',
+          y: '10%',
+          x2: '2%',
+          y2: '5%'
+        }
+        this.loadLinechart.setOption(option)
+        this.loadLinechart.showLoading();
+      } else {
+        var option = {
+          xAxis: {
+            data: []
+          },
+          yAxis: {
+            max: 100,
+            min: 0,
+            name: 'CPU负载',
+            type: 'value'
+          },
+          series: [
+            {
+              data: []
+            }
+          ]
+        }
+        this.$store.getters.cpuData.forEach(record => {
+          if (record.time == 0) {
+            option.xAxis.data.push('')
+          } else {
+            option.xAxis.data.push((new Date(record.timestamp * 1000)).toTimeString())
+          }
+          
+          option.series[0].data.push(record.used_rate)
+        });
+        this.loadLinechart.setOption(option)
+        this.loadLinechart.hideLoading()
+      }
+    }
+  }
 }
 </script>
 

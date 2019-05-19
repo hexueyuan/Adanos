@@ -1,5 +1,0 @@
-CREATE TABLE tb1 (
-    col1 INT PRIMARY KEY NOT NULL,
-    col2 CHAR(20) NOT NULL,
-    col3 CHAR(30)
-);
