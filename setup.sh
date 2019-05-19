@@ -13,4 +13,4 @@ done
 cd ${current}/websshBackend
 npm install
 
-mkdir ${current}/log/{backendAPI,collector}
+mkdir -p ${current}/log/{backendAPI,collector}
