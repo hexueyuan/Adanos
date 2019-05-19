@@ -1,0 +1,78 @@
+INFO:root:database initialize successfully.
+DEBUG:root:insert sql: INSERT INTO test (col2, col1) VALUES ("forth", 4);
+DEBUG:root:insert success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col1 = 2;
+DEBUG:root:select success.
+DEBUG:root:delete sql: DELETE FROM test WHERE col1 = 2;
+DEBUG:root:delete success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col1 = 6;
+DEBUG:root:select success.
+DEBUG:root:delete sql: DELETE FROM test WHERE col1 = 6;
+DEBUG:root:delete fail.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col1 = 1;
+DEBUG:root:select success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col1 = 6;
+DEBUG:root:select success.
+DEBUG:root:delete sql: DELETE FROM test WHERE col1 = 6;
+DEBUG:root:delete fail.
+DEBUG:root:update sql: UPDATE test SET col2 = "fifth", col1 = 5 WHERE col1 = 3;
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "fifth" and col1 = 5;
+DEBUG:root:select success.
+DEBUG:root:update sql: UPDATE test SET col2 = "fifth", col1 = 5 WHERE col1 = 6;
+DEBUG:root:insert sql: INSERT INTO test (col2, col1) VALUES ("\u7b2c\u516b", 8);
+DEBUG:root:insert success.
+DEBUG:root:insert sql: INSERT INTO test (col2, col1) VALUES ("\u7b2c\u4e5d", 9);
+DEBUG:root:insert success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "第九";
+DEBUG:root:select success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "第八";
+DEBUG:root:select success.
+DEBUG:root:update sql: UPDATE test SET col2 = "第八", col1 = 5 WHERE col2 = "第十";
+DEBUG:root:update sql: UPDATE test SET col2 = "第九", col1 = 5 WHERE col2 = "第九";
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "第八";
+DEBUG:root:select success.
+DEBUG:root:delete sql: DELETE FROM test WHERE col2 = "第八";
+DEBUG:root:delete fail.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "第九";
+DEBUG:root:select success.
+DEBUG:root:delete sql: DELETE FROM test WHERE col2 = "第九";
+DEBUG:root:delete fail.
+INFO:root:database initialize successfully.
+DEBUG:root:insert sql: INSERT INTO test (col2, col1) VALUES ("forth", 4);
+DEBUG:root:insert success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col1 = 2;
+DEBUG:root:select success.
+DEBUG:root:delete sql: DELETE FROM test WHERE col1 = 2;
+DEBUG:root:delete success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col1 = 6;
+DEBUG:root:select success.
+DEBUG:root:delete sql: DELETE FROM test WHERE col1 = 6;
+DEBUG:root:delete fail.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col1 = 1;
+DEBUG:root:select success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col1 = 6;
+DEBUG:root:select success.
+DEBUG:root:update sql: UPDATE test SET col2 = "fifth", col1 = 5 WHERE col1 = 3;
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "fifth" and col1 = 5;
+DEBUG:root:select success.
+DEBUG:root:update sql: UPDATE test SET col2 = "fifth", col1 = 5 WHERE col1 = 6;
+DEBUG:root:insert sql: INSERT INTO test (col2, col1) VALUES ("第八", 8);
+DEBUG:root:insert success.
+DEBUG:root:insert sql: INSERT INTO test (col2, col1) VALUES ("第九", 9);
+DEBUG:root:insert success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "第九";
+DEBUG:root:select success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "第八";
+DEBUG:root:select success.
+DEBUG:root:update sql: UPDATE test SET col2 = "第八", col1 = 5 WHERE col2 = "第十";
+DEBUG:root:update sql: UPDATE test SET col2 = "第九", col1 = 5 WHERE col2 = "第九";
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "第九" and col1 = 5;
+DEBUG:root:select success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "第八";
+DEBUG:root:select success.
+DEBUG:root:delete sql: DELETE FROM test WHERE col2 = "第八";
+DEBUG:root:delete success.
+DEBUG:root:select sql: SELECT col1, col2 FROM test WHERE col2 = "第九";
+DEBUG:root:select success.
+DEBUG:root:delete sql: DELETE FROM test WHERE col2 = "第九";
+DEBUG:root:delete success.
