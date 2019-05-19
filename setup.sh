@@ -2,10 +2,11 @@
 
 current=$(pwd)
 
-dependencies=['Flask', 'flask-socketio', 'sqlite3', 'pathlib2']
+dependencies=('Flask' 'flask-socketio' 'sqlite3' 'pathlib2')
 
-for dependency in dependencies;
+for dependency in ${dependencies[@]};
 do
+    echo "install:" ${dependency}
     pip install ${dependency}
 done
 
