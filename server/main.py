@@ -1,119 +1,67 @@
 # -*- coding: utf-8 -*-
-from submodule import dataWatcherRun, fileSystemRun
-from multiprocessing import Process
+from submodule import create_app, setDashboard, socketio
+from dashboard import Logger, Dashboard, convertDashboardConf, convertLoggerConf
 from database import SQLiteBase
-from dashboard import Logger, Config, Dashboard
+
+import json
+import sys
+import os
+
+def init_dashboard(db, mod_list, loggerFactory, config, datapool, debug=False):
+    for mod in mod_list:
+        if debug:
+            db.setPlugin(mod, 'logger', loggerFactory.getLogger(mod + 'Debug'))
+        else:
+            db.setPlugin(mod, 'logger', loggerFactory.getLogger(mod))
+        db.setPlugin(mod, 'config', config.get(mod, {}))
+        db.setPlugin(mod, 'database', datapool)
+
+def create_dashboard(conf):
+    dashboardConf = convertDashboardConf(conf)
+    #print json.dumps(dashboardConf, indent=2)
+    # --> 创建默认配置文件插件
+    config = dashboardConf['config']
+    mainConf = config.get('main', {})
+
+    # 创建dashboard
+    # --> 创建日志工厂
+    loggerConf = convertLoggerConf(dashboardConf['logger'])
+    #print json.dumps(loggerConf, indent=2)
+    logFactory = Logger(loggerConf)
+    
+    # --> 创建默认数据库插件
+    dbConf = config.get('database')
+    if mainConf.get('debug'):
+        db = SQLiteBase(dbConf['path'], logger=logFactory.getLogger('databaseDebug') ,init_script_file=dbConf.get('init_script_file'))
+    else:
+        db = SQLiteBase(dbConf['path'], logger=logFactory.getLogger('database') ,init_script_file=dbConf.get('init_script_file'))
+    dashboard = Dashboard()
+
+    init_dashboard(dashboard, ['main', 'dataWatcher', 'fileMonitor'], logFactory, config, db, debug=mainConf.get('debug', False))
+
+    return dashboard
 
 def main(conf):
-    ## 创建日志工厂
-    logFactory = Logger(conf['log'])
-    ## 创建默认数据库插件
-    db = SQLiteBase(conf['database']['path'], logger=logFactory.getLogger('database') ,init_script_file=conf['database'].get('init_script_file'))
-    ## 创建默认配置文件插件
-    config = conf['config']
+    dashboard = create_dashboard(conf)
+    setDashboard(dashboard)
 
-    dashboard_init = {
-        "namespace": {
-            "dataWatcher": {
-                "logger": logFactory.getLogger("dataWatcher"),
-                "database": db,
-                "config": config.get("dataWatcher")
-            },
-            "fileSystem": {
-                "logger": logFactory.getLogger("fileSystem"),
-                "database": None,
-                "config": config.get("fileSystem")
-            }
-        }
-    }
-    dashboard = Dashboard(dashboard_init)
-    # dataWatcher进程
-    proc1 = Process(target=dataWatcherRun, args=('dataWatcher', dashboard,))
-    proc1.daemon = True
-    proc1.start()
-    # fileSystem进程
-    proc2 = Process(target=fileSystemRun, args=('fileSystem', dashboard,))
-    proc2.daemon = True
-    proc2.start()
-    proc1.join()
-    proc2.join()
+    mainConf = dashboard.getPlugin('main', 'config')
+    logger = dashboard.getPlugin('main', 'logger')
+    logger.info("set dashboard.")
+
+    # 创建app
+    app = create_app()
+
+    logger.info("ready to run app.")
+    socketio.run(app, host=mainConf.get('host'), port=mainConf.get('port'), debug=mainConf.get('debug'))
 
 if __name__ == "__main__":
-    conf = {
-        'log': {
-            "version": 1,
-            "disable_existing_loggers": False,
-            "formatters": {
-                "default": {
-                    "format": "[%(asctime)s][%(name)s][%(levelname)s][%(filename)s:%(lineno)d]: %(message)s",
-                    "datefmt": "%d-%M-%Y %H:%M:%S"
-                }
-            },
-            "handlers": {
-                "database": {
-                    "class":"logging.FileHandler",
-                    "level":"DEBUG",
-                    "formatter":"default",
-                    "filename": "../log/backendAPI/database.log"
-                },
-                "dataWatcher": {
-                    "class":"logging.FileHandler",
-                    "level":"DEBUG",
-                    "formatter":"default",
-                    "filename": "../log/backendAPI/dataWatcher.log"
-                },
-                "fileSystem": {
-                    "class":"logging.FileHandler",
-                    "level":"DEBUG",
-                    "formatter":"default",
-                    "filename": "../log/backendAPI/fileSystem.log"
-                },
-                "defaultHandler": {
-                    "class":"logging.FileHandler",
-                    "level":"DEBUG",
-                    "formatter":"default",
-                    "filename": "../log/backendAPI/main.log"
-                }
-            },
-            "loggers": {
-                "database": {
-                    "handlers": ["database"],
-                    "level": "DEBUG",
-                    "propogate": "no"
-                },
-                "dataWatcher": {
-                    "handlers": ["dataWatcher"],
-                    "level": "DEBUG",
-                    "propogate": "no"
-                },
-                "fileSystem": {
-                    "handlers": ["fileSystem"],
-                    "level": "DEBUG",
-                    "propogate": "no"
-                }
-            },
-            "root": {
-                "level": "DEBUG",
-                "handlers": ['defaultHandler'],
-                "propogate": "no"
-            }
-        },
-        'config': {
-            "dataWatcher": {
-                "table_name": {
-                    "cpu": "cpuTable",
-                    "memory": "memoryTable",
-                    "disk": "diskTable"
-                }
-            },
-            "fileSystem": {
-
-            }
-        },
-        'database': {
-            "path": "../database/smws.db",
-            "init_script_file": "../conf/init_script.sql"
-        }
-    }
-
-    main(conf)
+    if len(sys.argv) != 2:
+        print "python main <conf_path>"
+        exit()
+    if os.path.isfile(sys.argv[1]):
+        with open(sys.argv[1], 'r') as f:
+            conf  = json.load(f)
+        main(conf)
+    else:
+        print "No such file: {}".format(sys.argv[1])

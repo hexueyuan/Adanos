@@ -6,9 +6,9 @@ Vue.use(Vuex)
 const state = {
     cpu: {
         //图表数据窗口大小默认20
-        win_size: 20,
+        win_size: 2000,
         //win_size * 1.2
-        win_max_size: 24,
+        win_max_size: 2400,
         //进程数据窗口大小默认10
         proccess_top_cnt: 10,
         //为适应动态调整，数据实际保存数量为win_size的1.2倍
@@ -47,9 +47,9 @@ const state = {
     },
     memory: {
         //图表数据窗口大小默认20
-        win_size: 20,
+        win_size: 2000,
         //win_size * 1.2
-        win_max_size: 24,
+        win_max_size: 2400,
         //进程数据窗口大小默认10
         proccess_top_cnt: 10,
         //为适应动态调整，数据实际保存数量为win_size的1.2倍
