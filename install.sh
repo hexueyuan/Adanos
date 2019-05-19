@@ -1,4 +1,4 @@
-git clone git@github.com:hexueyuan/Adanos.git
+git clone https://github.com/hexueyuan/Adanos.git
 
 cd Adanos
 ./setup.sh
