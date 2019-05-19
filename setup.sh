@@ -2,7 +2,7 @@
 
 current=$(pwd)
 
-dependencies=('Flask' 'flask-socketio' 'sqlite3' 'pathlib2')
+dependencies=('Flask' 'flask-socketio' 'pathlib2')
 
 for dependency in ${dependencies[@]};
 do
