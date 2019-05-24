@@ -31,10 +31,11 @@ const linechart_option = {
     ]
 }
 
-
+const fileMonitorAPI = '/apis/fileMonitor'
 
 const conf = {
-    linechart_option
+    linechart_option,
+    fileMonitorAPI
 }
 
 export default conf;

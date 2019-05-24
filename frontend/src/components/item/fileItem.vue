@@ -18,7 +18,7 @@ export default {
     },
     methods: {
         typeMap: function(type, name) {
-            if (type == "directory") {
+            if (type == "folder") {
                 return "./static/img/directory.png"
             } else {
                 return "./static/img/text.png"
