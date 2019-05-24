@@ -1,7 +1,7 @@
 <template>
-    <div class="item">
-        <img :src="imgPath" class="item-icon"/>
-        <p class="item-name">{{ itemName }}</p>
+    <div class="item" :name="itemName" :type="type">
+        <img :src="imgPath" class="item-icon" :name="itemName" :type="type"/>
+        <p class="item-name" :name="itemName" :type="type">{{ itemName }}</p>
     </div>
 </template>
 
@@ -34,12 +34,13 @@ export default {
     width: 120px;
 }
 .item:hover {
-    background-color:gray;
+    background-color:rgb(221, 217, 217);
+    border-radius:5px;
 }
 .item-icon {
     height: 80px;
     width: 80px;
-    margin: 0 auto;
+    margin-left: 20px;
 }
 .item-icon:hover {
     height: 85px;
