@@ -90,24 +90,6 @@ export default {
                 dialogVisible: false
             },
 
-            //创建新文件夹弹窗可视
-            newFolderDialogVisible: false,
-
-            //新文件夹名
-            folderName: '',
-
-            //创建新文件弹窗可视
-            newFileDialogVisible: false,
-
-            //新文件名
-            fileName: '',
-
-            //重命名弹窗可视
-            renameDialogVisible: false,
-
-            //新名称
-            newName: '',
-
             //右键时选中元素
             targetElement: null,
 
@@ -190,7 +172,6 @@ export default {
                 return one.name == name
             })
             if (aim != null) {
-                console.log(2)
                 return false
             } else {
                 return true
@@ -236,7 +217,6 @@ export default {
                         this.dirItems = res.data.record
                         this.currentIsDir = true
                         this.currentPath = path
-                        console.log(this.currentPath)
                     }
                 } else {
                     this.alertMessage('接口调用出错：' + res.data.errmsg, 'error')
@@ -250,7 +230,6 @@ export default {
         //    文件夹子文件对象
         //    文本文件的文件内容
         request_select_item_content: function(event) {
-            console.log(this.dirItems)
             var type = event.currentTarget.getAttribute('type')
             var name = event.currentTarget.getAttribute('name')
             var path = event.currentTarget.getAttribute('path')

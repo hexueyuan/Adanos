@@ -8,7 +8,7 @@ import Home from '@/components/pages/Home'
 import DiskPage from '@/components/pages/Diskpage'
 import CPUPage from '@/components/pages/CPUpage'
 import MemoryPage from '@/components/pages/Memorypage'
-import FileSystemPage from '@/components/pages/FileSystemGUI'
+import FileManage from '@/components/pages/FileManage'
 
 import webssh from '@/components/pages/webssh'
 
@@ -35,8 +35,8 @@ export default new Router({
           component: DiskPage
         },
         {
-          path: 'fileSystem',
-          component: FileSystemPage
+          path: 'fileManage',
+          component: FileManage
         },
         {
           path: 'webssh',

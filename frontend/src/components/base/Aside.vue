@@ -11,10 +11,10 @@
       </el-menu-item-group>
     </el-submenu>
     <el-menu-item index="2">
-      <span slot="title"><router-link  style="font-size: 1vw;text-decoration:none;color: black;" to="/Adanos/fileSystem">文件系统</router-link></span>
+      <span slot="title"><router-link  style="font-size: 1vw;text-decoration:none;color: black;" to="/Adanos/fileManage">文件管理</router-link></span>
     </el-menu-item>
     <el-menu-item index="3">
-      <span slot="title"><router-link  style="font-size: 1vw;text-decoration:none;color: black;" to="/Adanos/webssh">webssh</router-link></span>
+      <span slot="title"><router-link  style="font-size: 1vw;text-decoration:none;color: black;" to="/Adanos/webssh">服务器登录</router-link></span>
     </el-menu-item>
   </el-menu>
 </template>
